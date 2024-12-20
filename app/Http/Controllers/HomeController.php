@@ -49,32 +49,35 @@ class HomeController extends Controller
         return view('frontend.bayar', compact('car'));
     }
 
-    public function bayarStore(Request $request, $slug){
-        $car = Car::where('slug', $request->input('mobil'))->first();
+    //FUNCTION MIDTRANS
+    public function bayarStore(Request $request, $slug)
+    {
+        // Ambil data mobil berdasarkan slug
+        $car = Car::where('slug', $slug)->first();
     
-        // Validasi data lainnya
+        // Validasi input dari request
         $validatedData = $request->validate([
-            'mobil' => 'required', // Validasi dasar untuk mobil
+            'mobil' => 'required', // Validasi untuk mobil
             'harga' => 'required',
             'nama' => 'required',
             'nomor' => 'required',
             'hari' => 'required',
-            'status' => 'Unpaid',
-
+            'status' => 'Unpaid', // Status default
         ]);
+    
+       // Hitung total harga berdasarkan jumlah hari
+       $harga = $validatedData['harga'] * $validatedData['hari'];
 
-        // Hitung total harga berdasarkan jumlah hari
-        $harga = $validatedData['harga'] * $validatedData['hari'];
+       // Tambahkan total_harga ke dalam data yang akan disimpan
+       $validatedData['harga_total'] = $harga;
 
-        // Tambahkan total_harga ke dalam data yang akan disimpan
-        $validatedData['harga_total'] = $harga;
-
-        $validatedData['orders_id'] = uniqid();
-
-        // Membuat tabel bayar berdasarkan data @validateData kedalam databse
+        // Generate ID unik
+       $validatedData['orders_id'] = uniqid();
+       
+        // Simpan data pembayaran ke database
         $bayars = Bayar::create($validatedData);
-
-        //  Konfigurasi Midtrans
+    
+        // Konfigurasi Midtrans
         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
         \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
@@ -83,23 +86,30 @@ class HomeController extends Controller
         // Buat parameter transaksi
         $params = [
             'transaction_details' => [
-                'order_id' => $bayars->orders_id, // Gunakan ID dari record yang baru dibuat
-                'gross_amount' => $bayars->harga_total,
+                'order_id' => $bayars->orders_id, // Pastikan sesuai dengan format Midtrans
+                'gross_amount' =>$bayars->harga_total, // Pastikan sesuai dengan format Midtrans
+            ],
+            'item_details' => [
+                [
+                    'id' => $bayars->orders_id, // ID Orders
+                    'name' => $bayars->mobil, // Gunakan nama mobil dari data yang disimpan di bayars
+                    'quantity' => $bayars->hari, // Jumlah hari yang disewa
+                    'price' => $bayars->harga, // Harga per hari
+                ]
             ],
             'customer_details' => [
-                'first_name' => $bayars->nama, // Pastikan sesuai dengan format Midtrans
-                'phone' => $bayars->nomor, // Pastikan sesuai dengan format Midtrans
+                'first_name' => $bayars->nama, // Nama pemesan
+                'phone' => $bayars->nomor, // Nomor telepon pemesan
             ],
         ];
     
         // Dapatkan Snap Token dari Midtrans
         $snapToken = \Midtrans\Snap::getSnapToken($params);
-       
-        // Mengembalikan ke view sewa
-        return view('frontend.sewa', compact ('snapToken', 'bayars'));
+        // Kembalikan ke view dan mengirim variable snapToken serta data pembayaran
+        return view('frontend.sewa', compact('snapToken', 'bayars'));
     }
-
-    // callback
+    
+    // callback midtrans 
     public function callback(Request $request){
         $serverKey = config('midtrans.serverKey');
         $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
@@ -111,7 +121,6 @@ class HomeController extends Controller
         }
     }
 
-    
     public function invoice($orders_id){
         $bayars = Bayar::find($orders_id);
         return view('frontend.invoice', compact('bayars'));

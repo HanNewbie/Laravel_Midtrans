@@ -94,14 +94,17 @@
                                         <span>Transmisi</span>
                                         <span style="font-weight: 600">{{$car->transmisi}}</span>
                                     </li>
+                                    
                                 </ul>
                             </div>
                         </div>
                         <!-- Product actions-->
                         <div class="card-footer border-top-0 bg-transparent">
                             <div class="text-center">
-                                <a class="btn d-flex align-items-center justify-content-center btn-primary mt-auto"
-                                    href="{{route('bayar', $car->slug)}}" style="column-gap: 0.4rem">Sewa Mobil</a>
+                                <a class="btn d-flex align-items-center justify-content-center btn-primary mt-auto {{ $car->status != 'tersedia' ? 'disabled' : '' }}"
+                                    href="{{ $car->status == 'tersedia' ? route('bayar', $car->slug) : '#' }}"
+                                    style="column-gap: 0.4rem"> Sewa Mobil
+                                </a>
                             </div>
                         </div>
                     </div>

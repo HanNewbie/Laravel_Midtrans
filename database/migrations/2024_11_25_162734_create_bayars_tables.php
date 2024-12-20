@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('bayars', function (Blueprint $table) {
             $table->string('orders_id')->primary(); // Kolom order_id sebagai string unik
             $table->string('mobil');
-            $table->string('harga');
+            $table->integer('harga');
             $table->string('nama');
             $table->string('nomor');            
             $table->integer('hari');

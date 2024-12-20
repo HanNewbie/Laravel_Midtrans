@@ -28,7 +28,6 @@ Route::get('contact', [\App\Http\Controllers\HomeController::class, 'contact'])-
 Route::post('contact', [\App\Http\Controllers\HomeController::class, 'contactStore'])->name('contact.store');
 Route::get('bayar/{car:slug}', [\App\Http\Controllers\HomeController::class, 'bayar'])->name('bayar');
 Route::post('bayar/{car:slug}', [\App\Http\Controllers\HomeController::class, 'bayarStore'])->name('bayars.store');
-
 Route::post('/midtrans-callback', [\App\Http\Controllers\HomeController::class, 'callback']);
 Route::get('/invoice/{orders_id}', [\App\Http\Controllers\HomeController::class, 'invoice']);
 

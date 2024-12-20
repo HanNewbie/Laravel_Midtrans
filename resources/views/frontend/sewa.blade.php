@@ -34,10 +34,19 @@
         </li>
       </ul>
       <button
-        type="submit"
-        style="height: 50px; width: 400px; margin: 0 auto"
-        class="d-block btn btn-primary" id="pay-button">Bayar Sekarang
-    </button>
+      type="button"
+      style="height: 50px; width: 200px;"
+      class="btn btn-danger"
+      onclick="location.href='/';">
+      Batal
+  </button>
+  <button
+      type="submit"
+      style="height: 50px; width: 200px;"
+      class="btn btn-primary" 
+      id="pay-button">
+      Bayar Sekarang
+  </button>
     </div>
   </div>
   

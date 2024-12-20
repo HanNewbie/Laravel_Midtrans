@@ -68,7 +68,8 @@
             <!-- Product actions-->
             <div class="card-footer border-top-0 bg-transparent">
               <div class="text-center">
-                <a class="btn btn-primary mt-auto" href="{{route('bayar', $car->slug)}}">Sewa</a>
+                <a class="btn btn-primary mt-auto {{ $car->status != 'tersedia' ? 'disabled' : '' }}" 
+                class="btn btn-primary mt-auto" href="{{route('bayar', $car->slug)}}">Sewa</a>
                 <a
                   class="btn btn-info mt-auto text-white"
                   href="{{route('detail', $car->slug)}}">Detail</a>
