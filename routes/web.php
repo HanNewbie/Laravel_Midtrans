@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controller\Admin\CarController;
+use App\Http\Controllers\HomeController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,11 +18,9 @@ use App\Http\Controller\Admin\CarController;
 
 Route::prefix('/admin')->middleware('auth')->group(function() { // Mengatur rute untuk admin dengan middleware auth
     Route::get('/', function () { // Mengatur rute untuk halaman dashboard admin
-        return view('admin.dashboard'); // Menampilkan view admin.dashboard
+        return redirect('admin/dashboard'); // Menampilkan view admin.dashboard
     });
-    Route::resource('cars', CarController::class);
-    Route::resource('cars', ProductController::class);
-});
+}); 
 
 Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('homepage');
 Route::get('detail/{car:slug}', [\App\Http\Controllers\HomeController::class, 'detail'])->name('detail');
@@ -30,11 +30,11 @@ Route::get('bayar/{car:slug}', [\App\Http\Controllers\HomeController::class, 'ba
 Route::post('bayar/{car:slug}', [\App\Http\Controllers\HomeController::class, 'bayarStore'])->name('bayars.store');
 Route::post('/midtrans-callback', [\App\Http\Controllers\HomeController::class, 'callback']);
 Route::get('/invoice/{orders_id}', [\App\Http\Controllers\HomeController::class, 'invoice']);
-
-
+Route::get('download-invoice/{orders_id}', [\App\Http\Controllers\HomeController::class, 'downloadInvoice'])->name('downloadInvoice');
 
 Route::group(['middleware' => 'is_admin', 'prefix' => 'admin', 'as' => 'admin.'], function(){
     Route::get('dashboard',[App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard.index');
+    
     Route::resource('cars', \App\Http\Controllers\Admin\CarController::class);
     Route::put('cars/update-image/{id}', [\App\Http\Controllers\Admin\CarController::class,'updateImage'])->name('cars.updateImage');  
 

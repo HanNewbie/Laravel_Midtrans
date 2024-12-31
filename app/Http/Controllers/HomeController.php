@@ -6,8 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\Car;
 use App\Models\bayar;
-use Midtrans\Config;
-use Midtrans\Snap;
+use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Str;
 
 
@@ -47,6 +46,19 @@ class HomeController extends Controller
     public function bayar(Car $car){
 
         return view('frontend.bayar', compact('car'));
+    }
+
+    //FUNCTION DOWNLOAD INVOICE
+    public function downloadInvoice($orders_id)
+    {
+       // Ambil data pembayaran berdasarkan ID
+       $bayars = Bayar::findOrFail($orders_id);
+        
+       // Generate PDF dari view invoice
+       $pdf = PDF::loadView('invoice', compact('bayars'));
+       
+       // Download PDF dengan nama invoice-<id>.pdf
+       return $pdf->download('invoice-' . $bayars->orders_id . '.pdf');
     }
 
     //FUNCTION MIDTRANS

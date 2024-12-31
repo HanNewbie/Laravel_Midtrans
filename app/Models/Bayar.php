@@ -14,4 +14,5 @@ class Bayar extends Model
     protected $primaryKey = 'orders_id'; // Nama kolom primary key
     public $incrementing = false; // Jika primary key bukan tipe auto-increment
     protected $keyType = 'string'; // Jika primary key berupa string
+    
 }

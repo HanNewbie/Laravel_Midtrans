@@ -22,7 +22,7 @@
         </li>
         <li class="border-bottom p-2 d-flex justify-content-between">
           <span>Total Harga </span>
-          <span style="font-weight: 600">Rp.{{ $bayars->harga_total}}</span>
+          <span class="fw-bold text-dark">Rp{{ number_format($bayars->harga_total, 0, ',', '.') }}</span>
         </li>
         <li class="border-bottom p-2 d-flex justify-content-between">
           <span>Nama</span>
