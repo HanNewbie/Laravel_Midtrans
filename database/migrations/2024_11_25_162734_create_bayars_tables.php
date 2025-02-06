@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bayars', function (Blueprint $table) {
-            $table->string('orders_id')->primary(); // Kolom order_id sebagai string unik
+            $table->string('orders_id')->primary(); // Kolom order_id sebagai primary key
             $table->string('mobil');
             $table->integer('harga');
             $table->string('nama');
